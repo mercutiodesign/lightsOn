@@ -2,7 +2,7 @@
 # lightsOn.sh
 
 # Copyright (c) 2011 iye.cba at gmail com
-# url https://github.com/iye/lightsOn
+# url: https://github.com/iye/lightsOn
 # This script is licensed under GNU GPL version 2.0 or above
 
 # Description: Bash script that prevents the screensaver and display power
@@ -25,7 +25,7 @@
 # VLC or Firefox Flash Video are Fullscreen and disable
 # xscreensaver/kscreensaver and PowerManagement.
 
-# Google Chrome support added.
+# Google Chrome detection added.
 # Tested in official Google Chrome 21.0, must disable the Shockwave Flash plugin at /opt/google/chrome/PepperFlash/libpepflashplayer.so in chrome://plugins.
 mplayer_detection=0
 vlc_detection=0
