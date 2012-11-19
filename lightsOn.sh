@@ -134,8 +134,7 @@ isAppRunning()
     if [ $chrome_flash_detection == 1 ];then
         if [[ "$activ_win_title" = *exe* ]];then   
         # Check if Chrome Flash process is running
-            flash_process=`pgrep -lfc "chrome --type=plugin
-            --plugin-path=/usr/lib/flashplugin-installer/libflashplayer.so"`
+            flash_process=`pgrep -lfc "chrome --type=plugin --plugin-path=/usr/lib/flashplugin-installer/libflashplayer.so"`
             if [[ $flash_process -ge 1 ]];then
                 return 1
             fi
