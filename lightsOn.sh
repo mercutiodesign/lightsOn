@@ -2,7 +2,7 @@
 # lightsOn.sh
 
 # Copyright (c) 2011 iye.cba at gmail com
-# Url: https://github.com/zfz/lightsOn, forked form https://github.com/iye/lightsOn
+# url https://github.com/iye/lightsOn
 # This script is licensed under GNU GPL version 2.0 or above
 
 # Description: Bash script that prevents the screensaver and display power
