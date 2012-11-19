@@ -2,7 +2,7 @@
 # lightsOn.sh
 
 # Copyright (c) 2011 iye.cba at gmail com
-# url: https://github.com/iye/lightsOn
+# Url: https://github.com/zfz/lightsOn, forked form https://github.com/iye/lightsOn
 # This script is licensed under GNU GPL version 2.0 or above
 
 # Description: Bash script that prevents the screensaver and display power
@@ -15,7 +15,7 @@
 # HOW TO USE: Start the script with the number of seconds you want the checks
 # for fullscreen to be done. Example:
 # "./lightsOn.sh 120 &" will Check every 120 seconds if Mplayer,
-# VLC, Firefox or Chromium are fullscreen and delay screensaver and Power Management if so.
+# VLC, Firefox, Chromium or Chrome are fullscreen and delay screensaver and Power Management if so.
 # You want the number of seconds to be ~10 seconds less than the time it takes
 # your screensaver or Power Management to activate.
 # If you don't pass an argument, the checks are done every 50 seconds.
@@ -24,10 +24,14 @@
 # Modify these variables if you want this script to detect if Mplayer,
 # VLC or Firefox Flash Video are Fullscreen and disable
 # xscreensaver/kscreensaver and PowerManagement.
+
+# Google Chrome support added.
+# Tested in official Google Chrome 21.0, must disable the Shockwave Flash plugin at /opt/google/chrome/PepperFlash/libpepflashplayer.so in chrome://plugins.
 mplayer_detection=0
 vlc_detection=0
 firefox_flash_detection=1
 chromium_flash_detection=1
+chrome_flash_detection=1
 
 
 # YOU SHOULD NOT NEED TO MODIFY ANYTHING BELOW THIS LINE
@@ -124,7 +128,21 @@ isAppRunning()
         fi
     fi
 
+
+    # Check if user want to detect Video fullscreen on Chrome, modify variable chrome_flash_detection if you dont want Chrome detection
+    # Tested in official Google Chrome 21.0, must disable the Shockwave Flash plugin at /opt/google/chrome/PepperFlash/libpepflashplayer.so in chrome://plugins
+    if [ $chrome_flash_detection == 1 ];then
+        if [[ "$activ_win_title" = *exe* ]];then   
+        # Check if Chrome Flash process is running
+            flash_process=`pgrep -lfc "chrome --type=plugin
+            --plugin-path=/usr/lib/flashplugin-installer/libflashplayer.so"`
+            if [[ $flash_process -ge 1 ]];then
+                return 1
+            fi
+        fi
+    fi
     
+
     #check if user want to detect mplayer fullscreen, modify variable mplayer_detection
     if [ $mplayer_detection == 1 ];then  
         if [[ "$activ_win_title" = *mplayer* || "$activ_win_title" = *MPlayer* ]];then
