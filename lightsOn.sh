@@ -27,11 +27,12 @@
 
 # Google Chrome detection added.
 # Tested in official Google Chrome 21.0, must disable the Shockwave Flash plugin at /opt/google/chrome/PepperFlash/libpepflashplayer.so in chrome://plugins.
-mplayer_detection=0
-vlc_detection=0
+mplayer_detection=1
+vlc_detection=1
 firefox_flash_detection=1
-chromium_flash_detection=1
-chrome_flash_detection=1
+chromium_flash_detection=0
+chrome_flash_detection=0
+chrome_detection=1
 
 
 # YOU SHOULD NOT NEED TO MODIFY ANYTHING BELOW THIS LINE
@@ -68,13 +69,8 @@ checkFullscreen()
         activ_win_id=`DISPLAY=:0.${display} xprop -root _NET_ACTIVE_WINDOW`
         #activ_win_id=${activ_win_id#*# } #gives error if xprop returns extra ", 0x0" (happens on some distros)
         activ_win_id=${activ_win_id:40:9}
-
-        # Skip invalid window ids (commented as I could not reproduce a case
-        # where invalid id was returned, plus if id invalid
-        # isActivWinFullscreen will fail anyway.)
-        #if [ "$activ_win_id" = "0x0" ]; then
-        #     continue
-        #fi
+        
+        echo $activ_win_id;
         
         # Check if Active Window (the foremost window) is in fullscreen state
         isActivWinFullscreen=`DISPLAY=:0.${display} xprop -id $activ_win_id | grep _NET_WM_STATE_FULLSCREEN`
@@ -100,7 +96,6 @@ isAppRunning()
 {    
     #Get title of active window
     activ_win_title=`xprop -id $activ_win_id | grep "WM_CLASS(STRING)"`   # I used WM_NAME(STRING) before, WM_CLASS more accurate.
-
 
 
     # Check if user want to detect Video fullscreen on Firefox, modify variable firefox_flash_detection if you dont want Firefox detection
@@ -140,6 +135,16 @@ isAppRunning()
             fi
         fi
     fi
+
+    # Check if user want to detect Chrome, modify variable chrome_detection if you dont want Chrome detection
+    if [ $chrome_detection == 1 ];then
+        # Check if Chrome process is running
+        chrome_process=`pgrep -lfc "chrome"`
+        if [[ $chrome_process -ge 1 ]];then
+            echo "chrome running";
+            return 1
+        fi
+    fi
     
 
     #check if user want to detect mplayer fullscreen, modify variable mplayer_detection
@@ -167,6 +172,7 @@ isAppRunning()
         fi
     fi    
     
+    echo "no process found $activ_win_title";
 
 return 0
 }
@@ -174,10 +180,11 @@ return 0
 
 delayScreensaver()
 {
+    echo "disabling screensaver";
 
-    # reset inactivity time counter so screensaver is not started
+    # reset inactivity time counter so screensaver is not started > /dev/null
     if [ "$screensaver" == "xscreensaver" ]; then
-    	xscreensaver-command -deactivate > /dev/null
+    	xscreensaver-command -deactivate 
     elif [ "$screensaver" == "kscreensaver" ]; then
     	qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null
     fi
@@ -188,7 +195,8 @@ delayScreensaver()
     if [ $dpmsStatus == 1 ];then
         	xset -dpms
         	xset dpms
-	fi
+          echo "reset dpms";
+	  fi
 	
 }
 
